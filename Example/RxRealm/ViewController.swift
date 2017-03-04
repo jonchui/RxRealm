@@ -13,7 +13,7 @@ class Lap: Object {
 }
 
 class TickCounter: Object {
-    dynamic var id = UUID().uuidString
+    dynamic var id = "unique standard"
     dynamic var ticks: Int = 0
     override static func primaryKey() -> String? { return "id" }
 }
@@ -36,11 +36,14 @@ class ViewController: UIViewController {
 
     lazy var ticker: TickCounter = {
         let realm = try! Realm()
-        let ticker = TickCounter()
-        try! realm.write {
-            realm.add(ticker)
+        var ticker = realm.object(ofType: TickCounter.self, forPrimaryKey: "unique standard")
+        if ticker == nil {
+            ticker = TickCounter()
+            try! realm.write {
+                realm.add(ticker!, update: true)
+            }
         }
-        return ticker
+        return ticker!
     }()
 
     override func viewDidLoad() {
